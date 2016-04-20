@@ -1,52 +1,55 @@
 var express = require('express'),
-    mongoose = require('mongoose'),
-    bodyParser = require('body-parser'),
-    sql = require('mysql'),
+    adminRouter = require('./src/routes/adminRoutes'),
     guidelinesRouter = require('./src/routes/guidelinesRoutes');
 
 var app = express();
-
+var mongodb = require('mongodb').MongoClient;
 
 var port = process.env.PORT||3000;
 
-var dbConnection = sql.createConnection({
-    host: 'project-info-db-instance.cr1ksf6zj1sy.us-west-2.rds.amazonaws.com',
-    user: 'db_user',
-    password: '!01IceCream',
-    database: 'project'
-});
+//default nav bar items
+var nav= [ { item_id: 0,
+    title: 'Guidelines',
+    link: '/guidelines',
+    text: 'Guidelines' },
+    { item_id: 1,
+        title: 'Architecture',
+        link: '/architecture',
+        text: 'Architecture' },
+    { item_id: 2,
+        title: 'Documentation',
+        link: '/documentation',
+        text: 'System Documentation' },
+    { item_id: 3,
+        title: 'Quality',
+        link: '/quality',
+        text: 'Quality' } ]
 
+//mongo
+var url = 'mongodb://localhost:27017/projectApp';
+mongodb.connect(url, function (err, db) {
+    if (err) {
+        console.log("Error ecnountered connecting to mongo db");
+    } else {
+        conn = db;
+        var collection = conn.collection('navigation');
 
-dbConnection.connect( function(err){
-    if(err) {
-        console.log('Error was encountered connecting to db: ' + err);
-        return;
-    }else{
-        console.log("Connection was made to AWS MYSQL db");
+        //seed nav bar data
+        collection.deleteMany(),function(err,results){};
+        collection.insertMany(nav), function(err,results) {
+            nav = results;
+        };
     }
-});
-
-
-var nav=[];
-
-dbConnection.query('select * from project_nav', function(err, recordset){
-    console.log("Navigation List: " + recordset);
-    nav = recordset;
 });
 
 
 app.use(express.static('public'));
 app.use(express.static('src/views'));
-app.use('/guidelines',guidelinesRouter(nav, dbConnection));
-
+app.use('/guidelines',guidelinesRouter(nav, url));
+app.use('/admin',adminRouter(nav, url));
 
 app.set('views','./src/views');
 app.set('view engine', 'ejs');
-
-
-
-
-
 
 
 app.get('/', function(req, res){

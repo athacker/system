@@ -1,46 +1,56 @@
 var express = require('express');
 var guidelinesRouter = express.Router();
-var sql = require('mysql');
+var mongodb = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectID;
 
-
-
-
-var router = function(nav, dbConnection){
-
+var conn= {};
+var guideline = {};
+var router = function(navbar, url ){
     var guideList = [];
-
     guidelinesRouter.route('/')
-
+        .all(function (req, res, next){
+            mongodb.connect(url, function (err, db) {
+                if (err) {
+                    console.log("Error ecnountered connecting to mongo db");
+                } else {
+                    conn = db;
+                    next();
+                }
+            });
+         })
         .get(function(req, res){
-            dbConnection.query('select * from project_guidelines', function(err, recordset){
-                console.log("Returned List: " + recordset);
-                guideList  = recordset;
+            var collection = conn.collection('guidelines');
+             collection.find().toArray(function(err, data){
+                 guideList = data;
             });
             res.render('guidelineListView',{
-                title:'Guideline List',
-                nav:nav,
+                title:'Project Guidelines',
+                navs:navbar,
                 guidelines:guideList});
         });
 
     guidelinesRouter.route('/:id')
-        .all( function(req, res, next){
-            var id = req.params.id;
-            var guideline = {};
-            dbConnection.query("select * from project_guidelines where item_id = " + id,{  },
-                function(err, recordset){
-                    if (0===recordset.length){
-                        res.status(404).send('Guideline was not found.');
-                    }else{
-                        req.guideline = recordset[0];
-                        next();
-                    }
-            });
-        })
+        .all(function (req, res, next){
+        mongodb.connect(url, function (err, db) {
+            if (err) {
+                console.log("Error ecnountered connecting to mongo db");
+            } else {
+                conn = db;
+                next();
+            }
+        });
+    })
         .get(function(req, res){
-            res.render('guidelineView',{
+            var id = new ObjectId(req.params.id);
+
+            var collection = conn.collection('guidelines');
+            collection.findOne({_id:id},function(err, data){
+                guideline = data;
+             });
+        res.render('guidelineView',{
                 title:'Guideline View',
-                nav:nav,
-                guideline:req.guideline});
+                navs:navbar,
+                guideline:guideline});
         });
 
     return guidelinesRouter;
