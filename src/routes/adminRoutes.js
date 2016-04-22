@@ -5,7 +5,7 @@ var adminRouter = express.Router();
 var router = function(nav, url){
 
     adminRouter.route('/addGuideline').get(function(req, res){
-        console.log("Admin Router");
+        console.log('Admin Router');
         //var guidelines = [{title:'Quality', value:'Protractor, Karma, Jasmine, jUnit'}];
         //var collection = db.collection('guidelines');
         //

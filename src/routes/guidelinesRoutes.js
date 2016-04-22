@@ -1,57 +1,34 @@
 var express = require('express');
 var guidelinesRouter = express.Router();
-var mongodb = require('mongodb').MongoClient;
-var ObjectId = require('mongodb').ObjectID;
+var Controller = require('../controllers/guidelineController');
 
-var conn= {};
-var guideline = {};
+
+
+
 var router = function(navbar, url ){
-    var guideList = [];
+
+    var guidelineController = new Controller(null, navbar);
+
+    guidelinesRouter.use(function(req,res,next){
+        if(!req.user){
+            res.redirect('/');
+        }else{
+            next();
+        }
+    });
+
     guidelinesRouter.route('/')
-        .all(function (req, res, next){
-            mongodb.connect(url, function (err, db) {
-                if (err) {
-                    console.log("Error ecnountered connecting to mongo db");
-                } else {
-                    conn = db;
-                    next();
-                }
-            });
-         })
-        .get(function(req, res){
-            var collection = conn.collection('guidelines');
-             collection.find().toArray(function(err, data){
-                 guideList = data;
-            });
-            res.render('guidelineListView',{
-                title:'Project Guidelines',
-                navs:navbar,
-                guidelines:guideList});
-        });
+      .get( function(req,res){
+            guidelineController.getAll(req,res);
+       });
+
+
+
 
     guidelinesRouter.route('/:id')
-        .all(function (req, res, next){
-        mongodb.connect(url, function (err, db) {
-            if (err) {
-                console.log("Error ecnountered connecting to mongo db");
-            } else {
-                conn = db;
-                next();
-            }
-        });
-    })
-        .get(function(req, res){
-            var id = new ObjectId(req.params.id);
-
-            var collection = conn.collection('guidelines');
-            collection.findOne({_id:id},function(err, data){
-                guideline = data;
-             });
-        res.render('guidelineView',{
-                title:'Guideline View',
-                navs:navbar,
-                guideline:guideline});
-        });
+      .get(function(req, res){
+          guidelineController.getById(req,res);
+      });
 
     return guidelinesRouter;
 };
