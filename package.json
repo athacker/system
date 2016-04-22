@@ -19,11 +19,15 @@
   "author": "andrea thacker",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.1",
     "ejs": "^2.4.1",
     "express": "^4.13.4",
+    "express-session": "^1.13.0",
     "grunt": "^0.4.5",
     "mongodb": "^2.1.16",
-    "mysql": "^2.10.2"
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
