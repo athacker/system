@@ -12,7 +12,7 @@ module.exports = function(app) {
     passport.deserializeUser( function(user, doneCB){
        doneCB(null, user);
     });
-
+    require('./strategies/google.strategy')();
     require('./strategies/local.strategy')();
 
 
