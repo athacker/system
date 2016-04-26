@@ -10,11 +10,12 @@ var router = function(navbar, url ){
     var guidelineController = new Controller(null, navbar);
 
     guidelinesRouter.use(function(req,res,next){
-        if(!req.user){
-            res.redirect('/');
-        }else{
-            next();
-        }
+        guidelineController.middleware(req, res, next);
+        //if(!req.user){
+        //    res.redirect('/');
+        //}else{
+        //    next();
+        //}
     });
 
     guidelinesRouter.route('/')
