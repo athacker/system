@@ -4,6 +4,7 @@
     <!--bower:css-->
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/lib/bootstrap-social/bootstrap-social.css" />
     <!--endbower-->
     <!-- bower:js -->
     <script src="/lib/jquery/dist/jquery.js"></script>
@@ -18,15 +19,39 @@
 
 </head>
 
-<body>
-
-<div>
+<body class="container">
 
 
-   Picture <%=user.picture%><br/>
-   Gender <%=user.gender%><br/>
-   Name <%=user.name%><br/>
-   User Id: <%=user.userId%><br/>
+
+<div class="col-sm-8">
+
+
+
+
+    <ul class="col-sm-4 social-buttons">
+
+        <li>
+            <a href="/oauth/google" class="btn btn-block btn-social  <%if( user.google) { %>btn-google<%  } %>">
+                <span class="fa fa-google"></span> Sign in with Google</a>
+            GOOGLE?<%=user.google%>
+        </li>
+
+        <li>
+            <a href="/oauth/twitter" class="btn btn-block btn-social  <%if( user.twitter) { %>btn-twitter<%  } %>">
+                <span class="fa fa-twitter"></span> Sign in with Twitter</a>
+            TWITTER?<%=user.twitter%>
+        </li>
+        <li>
+            <a href="/oauth/facebook" class="btn btn-block btn-social <%if( user.facebook) { %>btn-facebook<%  } %>">
+                <span class="fa fa-facebook"></span> Sign in with Facebook</a>
+            FACEBOOK? <%=user.facebook%>
+        </li>
+
+    </ul>
+
+
+
+
 </div>
 
 
@@ -34,5 +59,11 @@
 
 
 </body>
+
+<script type="javascript">
+
+    alert(JSON.stringify(<%=user %>));
+
+</script>
 
 </html>

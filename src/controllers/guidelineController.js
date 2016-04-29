@@ -1,11 +1,16 @@
 var mongodb = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectID;
 
-var url = 'mongodb://localhost:27017/projectApp'
+var url = 'mongodb://localhost:27017/projectApp';
 
 var guidelineController = function(serice, navbar){
 
-
+    var middleware = function(req,res, next){
+        if(!req.user){
+           res.redirect('/');
+        }
+        next();
+    };
 
     var getAll = function(req, res){
         mongodb.connect(url, function (err, db) {
@@ -42,8 +47,9 @@ var guidelineController = function(serice, navbar){
 
     return{
         getAll: getAll,
-        getById: getById
-    }
+        getById: getById,
+        middleware: middleware
+    };
 
 
 
