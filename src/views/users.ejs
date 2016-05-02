@@ -23,6 +23,29 @@
 
 
 
+
+
+
+<div class="col-sm-8">
+    <img src="<%=user.image%>" >  <br/>
+    <%=user.displayName%><br/>
+
+    <%if(user.facebook){%>
+    <img src="<%=user.facebook.image%>" >  <br/>
+    Total friends: <%=user.facebook.friends %>
+    <%}%>
+
+    <%if(user.twitter){%>
+
+    Last Post: <%=user.twitter.lastPost %>
+    <%}%>
+
+
+
+
+</div>
+
+
 <div class="col-sm-8">
 
 
